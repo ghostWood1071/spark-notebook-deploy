@@ -57,9 +57,9 @@ hub:
       c.KubeSpawner.delete_stopped_pods = False
 
 singleuser:
+  networkPolicy:
+    enabled: false
   image:
-    networkPolicy:
-      enabled: false
     name: ghostwood/spark-notebook-jupyter
     tag: "0.0.2"
     pullPolicy: IfNotPresent
