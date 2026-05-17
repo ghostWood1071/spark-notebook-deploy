@@ -1,0 +1,89 @@
+proxy:
+  service:
+    type: ClusterIP
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hosts:
+    - notebook.k8s.tailnet
+  pathSuffix: ""
+  pathType: Prefix
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "500m"
+  tls: []
+
+hub:
+  extraEnv:
+    JH_USERS_JSON:
+      valueFrom:
+        secretKeyRef:
+          name: jupyterhub-auth
+          key: users.json
+
+  extraConfig:
+    00-simple-password-auth: |
+      import os
+      import json
+      from secrets import compare_digest
+      from jupyterhub.auth import Authenticator
+
+      users = json.loads(os.environ.get("JH_USERS_JSON", "{}"))
+
+      class SimplePasswordAuthenticator(Authenticator):
+          async def authenticate(self, handler, data):
+              username = data.get("username", "")
+              password = data.get("password", "")
+
+              expected_password = users.get(username)
+              if expected_password and compare_digest(password, expected_password):
+                  return username
+
+              return None
+
+      c.JupyterHub.authenticator_class = SimplePasswordAuthenticator
+      c.Authenticator.allowed_users = set(users.keys())
+      c.Authenticator.admin_users = {"admin"}
+
+singleuser:
+  image:
+    name: ghostwood/spark-jupyter-client
+    tag: "1.0.0"
+    pullPolicy: IfNotPresent
+
+  storage:
+    type: dynamic
+    capacity: 10Gi
+    homeMountPath: /home/jovyan
+
+  cpu:
+    guarantee: 500m
+    limit: 2
+
+  memory:
+    guarantee: 1G
+    limit: 4G
+
+  allowPrivilegeEscalation: false
+
+  extraEnv:
+    SPARK_CLUSTERS_JSON: |
+      {
+        "small": {
+          "endpoint": "sc://data-exp-small-connect.compute.svc.cluster.local:15002",
+          "description": "Small shared Spark cluster"
+        },
+        "medium": {
+          "endpoint": "sc://data-exp-medium-connect.compute.svc.cluster.local:15002",
+          "description": "Medium shared Spark cluster"
+        },
+        "large": {
+          "endpoint": "sc://data-exp-large-connect.compute.svc.cluster.local:15002",
+          "description": "Large shared Spark cluster"
+        }
+      }
+
+cull:
+  enabled: true
+  timeout: 3600
+  every: 300
