@@ -1,4 +1,7 @@
 proxy:
+  chp:
+    networkPolicy:
+      enabled: false
   service:
     type: ClusterIP
 
@@ -14,6 +17,8 @@ ingress:
   tls: []
 
 hub:
+  networkPolicy:
+    enabled: false
   extraEnv:
     JH_USERS_JSON:
       valueFrom:
@@ -53,6 +58,8 @@ hub:
 
 singleuser:
   image:
+    networkPolicy:
+      enabled: false
     name: ghostwood/spark-notebook-jupyter
     tag: "0.0.2"
     pullPolicy: IfNotPresent
