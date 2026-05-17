@@ -45,6 +45,12 @@ hub:
       c.Authenticator.allowed_users = set(users.keys())
       c.Authenticator.admin_users = {"admin"}
 
+    01-timeout-debug: |
+      c.Spawner.start_timeout = 600
+      c.Spawner.http_timeout = 300
+      c.KubeSpawner.debug = True
+      c.KubeSpawner.delete_stopped_pods = False
+
 singleuser:
   image:
     name: ghostwood/spark-notebook-jupyter
