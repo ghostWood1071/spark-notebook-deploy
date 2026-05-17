@@ -6,6 +6,20 @@ export SPARK_HOME="${SPARK_HOME:-/opt/spark}"
 : "${SPARK_MASTER_URL:?SPARK_MASTER_URL is required, example spark://data-exp-medium-master.compute.svc.cluster.local:7077}"
 
 SPARK_CONNECT_PORT="${SPARK_CONNECT_PORT:-15002}"
+POD_IP="${POD_IP:-}"
+SPARK_DRIVER_HOST="${SPARK_DRIVER_HOST:-${POD_IP}}"
+SPARK_DRIVER_BIND_ADDRESS="${SPARK_DRIVER_BIND_ADDRESS:-0.0.0.0}"
+SPARK_DRIVER_PORT="${SPARK_DRIVER_PORT:-37077}"
+SPARK_BLOCKMANAGER_PORT="${SPARK_BLOCKMANAGER_PORT:-37078}"
+
+if [ -z "${SPARK_DRIVER_HOST}" ]; then
+  SPARK_DRIVER_HOST="$(hostname -i | awk '{print $1}')"
+fi
+
+echo "[spark-connect] driver_host=${SPARK_DRIVER_HOST}"
+echo "[spark-connect] driver_bind_address=${SPARK_DRIVER_BIND_ADDRESS}"
+echo "[spark-connect] driver_port=${SPARK_DRIVER_PORT}"
+echo "[spark-connect] blockmanager_port=${SPARK_BLOCKMANAGER_PORT}"
 SPARK_CONNECT_BIND_ADDRESS="${SPARK_CONNECT_BIND_ADDRESS:-0.0.0.0}"
 
 HIVE_METASTORE_URIS="${HIVE_METASTORE_URIS:-thrift://hive-metastore.metastore.svc.cluster.local:9083}"
@@ -36,6 +50,11 @@ exec "${SPARK_HOME}/bin/spark-submit" \
   --name spark-connect-shared-server \
   --master "${SPARK_MASTER_URL}" \
   --conf spark.scheduler.mode=FAIR \
+  --conf spark.driver.host="${SPARK_DRIVER_HOST}" \
+  --conf spark.driver.bindAddress="${SPARK_DRIVER_BIND_ADDRESS}" \
+  --conf spark.driver.port="${SPARK_DRIVER_PORT}" \
+  --conf spark.blockManager.port="${SPARK_BLOCKMANAGER_PORT}" \
+  --conf spark.port.maxRetries=32 \
   --conf spark.scheduler.allocation.file=/opt/spark/conf/fairscheduler.xml \
   --conf spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension \
   --conf spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog \

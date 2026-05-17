@@ -33,8 +33,26 @@ spec:
           command: ["/opt/spark/k8s-scripts/start-connect.sh"]
           ports:
             - name: connect
-              containerPort: {{ .Values.connect.port }}
+              containerPort: { { .Values.connect.port } }
+            - name: driver-rpc
+              containerPort: { { .Values.connect.driverPort } }
+            - name: blockmanager
+              containerPort: { { .Values.connect.blockManagerPort } }
           env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: SPARK_DRIVER_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: SPARK_DRIVER_BIND_ADDRESS
+              value: "0.0.0.0"
+            - name: SPARK_DRIVER_PORT
+              value: "{{ .Values.connect.driverPort }}"
+            - name: SPARK_BLOCKMANAGER_PORT
+              value: "{{ .Values.connect.blockManagerPort }}"
             - name: SPARK_MASTER_URL
               value: "spark://{{ include "spark-shared-cluster.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.master.port }}"
             - name: SPARK_CONNECT_PORT

@@ -37,6 +37,8 @@ connect:
   enabled: true
   replicas: 1
   port: 15002
+  driverPort: 37077
+  blockManagerPort: 37078
   cpuRequest: "1"
   cpuLimit: "2"
   memoryRequest: "2Gi"
