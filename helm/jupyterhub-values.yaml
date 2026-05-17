@@ -68,20 +68,20 @@ singleuser:
 
   extraEnv:
     SPARK_CLUSTERS_JSON: |
-      {
-        "small": {
+      {{
+        "small": {{
           "endpoint": "sc://data-exp-small-connect.compute.svc.cluster.local:15002",
           "description": "Small shared Spark cluster"
-        },
-        "medium": {
+        }},
+        "medium": {{
           "endpoint": "sc://data-exp-medium-connect.compute.svc.cluster.local:15002",
           "description": "Medium shared Spark cluster"
-        },
-        "large": {
+        }},
+        "large": {{
           "endpoint": "sc://data-exp-large-connect.compute.svc.cluster.local:15002",
           "description": "Large shared Spark cluster"
-        }
-      }
+        }}
+      }}
 
 cull:
   enabled: true
