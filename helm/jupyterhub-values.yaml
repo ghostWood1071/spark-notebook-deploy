@@ -47,8 +47,8 @@ hub:
 
 singleuser:
   image:
-    name: ghostwood/spark-jupyter-client
-    tag: "1.0.0"
+    name: ghostwood/spark-notebook-jupyter
+    tag: "0.0.1"
     pullPolicy: IfNotPresent
 
   storage:
@@ -57,7 +57,7 @@ singleuser:
     homeMountPath: /home/jovyan
 
   cpu:
-    guarantee: 500m
+    guarantee: 0.5
     limit: 2
 
   memory:
