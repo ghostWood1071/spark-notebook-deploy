@@ -36,7 +36,7 @@ spec:
               containerPort: {{ .Values.connect.port }}
           env:
             - name: SPARK_MASTER_URL
-              value: "spark://{{ include "spark-shared-cluster.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local:7077"
+              value: "spark://{{ include "spark-shared-cluster.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.master.port }}"
             - name: SPARK_CONNECT_PORT
               value: "{{ .Values.connect.port }}"
             - name: HIVE_METASTORE_URIS

@@ -49,7 +49,7 @@ spark:
   s3SecretName: "spark-s3-credentials"
   eventLog:
     enabled: "false"
-    dir: "s3a://spark-event-logs/"
+    dir: "s3a://spark-logs/events"
 
 fairSchedulerXml: |
   <?xml version="1.0"?>

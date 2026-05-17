@@ -28,9 +28,9 @@ spec:
           command: ["/opt/spark/k8s-scripts/start-master.sh"]
           ports:
             - name: master
-              containerPort: 7077
+              containerPort: { { .Values.master.port } }
             - name: webui
-              containerPort: {{ .Values.master.webui.port }}
+              containerPort: { { .Values.master.webui.port } }
           env:
             - name: SPARK_MASTER_HOST
               valueFrom:
@@ -63,8 +63,8 @@ spec:
     component: master
   ports:
     - name: master
-      port: 7077
+      port: { { .Values.master.port } }
       targetPort: master
     - name: webui
-      port: {{ .Values.master.webui.port }}
+      port: { { .Values.master.webui.port } }
       targetPort: webui

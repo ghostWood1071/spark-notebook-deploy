@@ -32,7 +32,7 @@ spec:
               containerPort: {{ .Values.worker.webui.port }}
           env:
             - name: SPARK_MASTER_URL
-              value: "spark://{{ include "spark-shared-cluster.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local:7077"
+              value: "spark://{{ include "spark-shared-cluster.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.master.port }}"
             - name: SPARK_WORKER_CORES
               value: "{{ .Values.worker.cores }}"
             - name: SPARK_WORKER_MEMORY
