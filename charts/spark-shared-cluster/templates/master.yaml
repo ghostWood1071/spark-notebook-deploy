@@ -33,9 +33,11 @@ spec:
               containerPort: {{ .Values.master.webui.port }}
           env:
             - name: SPARK_MASTER_HOST
-              value: "{{ include "spark-shared-cluster.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
             - name: SPARK_MASTER_PORT
-              value: "7077"
+              value: "{{ .Values.master.port }}"
             - name: SPARK_MASTER_WEBUI_PORT
               value: "{{ .Values.master.webui.port }}"
           resources:

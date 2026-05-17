@@ -15,11 +15,12 @@ master:
   replicas: 1
   cpu: "500m"
   memory: "1Gi"
+  port: 17077
   service:
     type: ClusterIP
   webui:
     enabled: true
-    port: 8080
+    port: 18080
 
 worker:
   replicas: 2
@@ -30,7 +31,7 @@ worker:
   memoryRequest: "4Gi"
   memoryLimit: "5Gi"
   webui:
-    port: 8081
+    port: 18081
 
 connect:
   enabled: true
